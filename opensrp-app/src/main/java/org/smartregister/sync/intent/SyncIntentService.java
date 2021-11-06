@@ -270,7 +270,7 @@ public class SyncIntentService extends BaseSyncIntentService {
             }
             String jsonPayload = request.toString();
             Response<String> response = httpAgent.post(
-                    MessageFormat.format("{0}/{1}",
+                    MessageFormat.format("{0}{1}",
                             baseUrl,
                             ADD_URL),
                     jsonPayload);

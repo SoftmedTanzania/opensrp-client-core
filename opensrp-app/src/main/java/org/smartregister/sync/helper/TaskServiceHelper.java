@@ -226,7 +226,7 @@ public class TaskServiceHelper extends BaseHelper {
 
             String baseUrl = CoreLibrary.getInstance().context().configuration().dristhiBaseURL();
             Response<String> response = httpAgent.postWithJsonResponse(
-                    MessageFormat.format("{0}/{1}",
+                    MessageFormat.format("{0}{1}",
                             baseUrl,
                             UPDATE_STATUS_URL),
                     jsonPayload);
@@ -259,7 +259,7 @@ public class TaskServiceHelper extends BaseHelper {
             String jsonPayload = taskGson.toJson(tasks);
             String baseUrl = CoreLibrary.getInstance().context().configuration().dristhiBaseURL();
             Response<String> response = httpAgent.postWithJsonResponse(
-                    MessageFormat.format("{0}/{1}",
+                    MessageFormat.format("{0}{1}",
                             baseUrl,
                             ADD_TASK_URL),
                     jsonPayload);
