@@ -12,6 +12,7 @@ import java.net.URL;
 import static org.smartregister.AllConstants.CURRENT_LOCALITY;
 import static org.smartregister.AllConstants.DEFAULT_LOCALE;
 import static org.smartregister.AllConstants.DEFAULT_LOCALITY_ID_PREFIX;
+import static org.smartregister.AllConstants.DEFAULT_LOCALITY_NAME;
 import static org.smartregister.AllConstants.DEFAULT_TEAM_ID_PREFIX;
 import static org.smartregister.AllConstants.DEFAULT_TEAM_PREFIX;
 import static org.smartregister.AllConstants.DRISHTI_BASE_URL;
@@ -97,6 +98,13 @@ public class AllSharedPreferences {
     public void saveDefaultLocalityId(String username, String localityId) {
         if (username != null) {
             preferences.edit().putString(DEFAULT_LOCALITY_ID_PREFIX + username, localityId)
+                    .commit();
+        }
+    }
+
+    public void saveDefaultLocalityName(String locationName) {
+        if (locationName != null) {
+            preferences.edit().putString(DEFAULT_LOCALITY_NAME, locationName)
                     .commit();
         }
     }

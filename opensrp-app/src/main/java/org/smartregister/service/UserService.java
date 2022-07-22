@@ -1,5 +1,15 @@
 package org.smartregister.service;
 
+import static org.smartregister.AllConstants.ENGLISH_LANGUAGE;
+import static org.smartregister.AllConstants.ENGLISH_LOCALE;
+import static org.smartregister.AllConstants.KANNADA_LANGUAGE;
+import static org.smartregister.AllConstants.KANNADA_LOCALE;
+import static org.smartregister.AllConstants.OPENSRP_AUTH_USER_URL_PATH;
+import static org.smartregister.AllConstants.OPENSRP_LOCATION_URL_PATH;
+import static org.smartregister.AllConstants.OPERATIONAL_AREAS;
+import static org.smartregister.AllConstants.ORGANIZATION_IDS;
+import static org.smartregister.event.Event.ON_LOGOUT;
+
 import android.annotation.TargetApi;
 import android.os.Build;
 import android.security.KeyPairGeneratorSpec;
@@ -54,16 +64,6 @@ import javax.crypto.CipherOutputStream;
 import javax.security.auth.x500.X500Principal;
 
 import timber.log.Timber;
-
-import static org.smartregister.AllConstants.ENGLISH_LANGUAGE;
-import static org.smartregister.AllConstants.ENGLISH_LOCALE;
-import static org.smartregister.AllConstants.KANNADA_LANGUAGE;
-import static org.smartregister.AllConstants.KANNADA_LOCALE;
-import static org.smartregister.AllConstants.OPENSRP_AUTH_USER_URL_PATH;
-import static org.smartregister.AllConstants.OPENSRP_LOCATION_URL_PATH;
-import static org.smartregister.AllConstants.OPERATIONAL_AREAS;
-import static org.smartregister.AllConstants.ORGANIZATION_IDS;
-import static org.smartregister.event.Event.ON_LOGOUT;
 
 public class UserService {
     private static final String KEYSTORE = "AndroidKeyStore";
@@ -372,6 +372,7 @@ public class UserService {
         saveAnmTeam(getUserTeam(userInfo));
         saveUserInfo(getUserData(userInfo));
         saveDefaultLocationId(username, getUserDefaultLocationId(userInfo));
+        saveDefaultLocationName(getUserDefaultLocationName(userInfo));
         saveUserLocationId(username, getUserLocationId(userInfo));
         saveDefaultTeam(username, getUserDefaultTeam(userInfo));
         saveDefaultTeamId(username, getUserDefaultTeamId(userInfo));
@@ -431,6 +432,12 @@ public class UserService {
         }
     }
 
+    public void saveDefaultLocationName(String locationName) {
+        if (locationName != null) {
+            allSharedPreferences.saveDefaultLocalityName(locationName);
+        }
+    }
+
     public String getUserDefaultTeam(LoginResponseData userInfo) {
         try {
             if (userInfo != null && userInfo.team != null && userInfo.team.team != null) {
@@ -470,6 +477,17 @@ public class UserService {
         try {
             if (userInfo != null && userInfo.team != null && userInfo.team.team != null && userInfo.team.team.location != null) {
                 return userInfo.team.team.location.uuid;
+            }
+        } catch (Exception e) {
+            Timber.e(e);
+        }
+        return null;
+    }
+
+    public String getUserDefaultLocationName(LoginResponseData userInfo) {
+        try {
+            if (userInfo != null && userInfo.team != null && userInfo.team.team != null && userInfo.team.team.location != null) {
+                return userInfo.team.team.location.name;
             }
         } catch (Exception e) {
             Timber.e(e);
