@@ -24,6 +24,8 @@ import static org.smartregister.AllConstants.IS_SYNC_IN_PROGRESS_PREFERENCE_KEY;
 import static org.smartregister.AllConstants.LANGUAGE_PREFERENCE_KEY;
 import static org.smartregister.AllConstants.PIONEER_USER;
 import static org.smartregister.AllConstants.SERVER_TIMEZONE;
+import static org.smartregister.AllConstants.TEAM_ROLE;
+import static org.smartregister.AllConstants.TEAM_ROLE_IDENTIFIER;
 import static org.smartregister.AllConstants.USER_LOCALITY_ID_PREFIX;
 import static org.smartregister.util.Log.logError;
 import static org.smartregister.util.Log.logInfo;
@@ -135,6 +137,16 @@ public class AllSharedPreferences {
             preferences.edit().putString(DEFAULT_TEAM_PREFIX + username, team)
                     .commit();
         }
+    }
+
+    public void saveTeamRole(String teamRole) {
+        preferences.edit().putString(TEAM_ROLE, teamRole)
+                .commit();
+    }
+
+    public void saveTeamRoleIdentifier(String teamRoleIdentifier) {
+        preferences.edit().putString(TEAM_ROLE_IDENTIFIER, teamRoleIdentifier)
+                .commit();
     }
 
     public String fetchDefaultTeam(String username) {

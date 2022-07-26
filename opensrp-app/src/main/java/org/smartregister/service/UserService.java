@@ -376,6 +376,8 @@ public class UserService {
         saveUserLocationId(username, getUserLocationId(userInfo));
         saveDefaultTeam(username, getUserDefaultTeam(userInfo));
         saveDefaultTeamId(username, getUserDefaultTeamId(userInfo));
+        saveTeamRole(getUserTeamRole(userInfo));
+        saveTeamRoleIdentifier(getUserTeamRoleIdentifier(userInfo));
         saveServerTimeZone(userInfo);
         saveJurisdictions(userInfo.jurisdictions);
         saveOrganizations(getUserTeam(userInfo));
@@ -455,10 +457,42 @@ public class UserService {
         }
     }
 
+    public void saveTeamRole(String teamRole) {
+        allSharedPreferences.saveTeamRole(teamRole);
+    }
+
+    public void saveTeamRoleIdentifier(String teamRoleIdentifier) {
+        allSharedPreferences.saveTeamRoleIdentifier(teamRoleIdentifier);
+    }
+
     public String getUserDefaultTeamId(LoginResponseData userInfo) {
         try {
             if (userInfo != null && userInfo.team != null && userInfo.team.team != null) {
                 return userInfo.team.team.uuid;
+            }
+        } catch (Exception e) {
+            Timber.e(e);
+        }
+
+        return null;
+    }
+
+    public String getUserTeamRole(LoginResponseData userInfo) {
+        try {
+            if (userInfo != null && userInfo.team != null && userInfo.team.teamRole != null) {
+                return userInfo.team.teamRole.name;
+            }
+        } catch (Exception e) {
+            Timber.e(e);
+        }
+
+        return null;
+    }
+
+    public String getUserTeamRoleIdentifier(LoginResponseData userInfo) {
+        try {
+            if (userInfo != null && userInfo.team != null && userInfo.team.teamRole != null) {
+                return userInfo.team.teamRole.identifier;
             }
         } catch (Exception e) {
             Timber.e(e);

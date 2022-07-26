@@ -16,6 +16,8 @@ public class TeamMember {
 
     public Team team;
 
+    public TeamRole teamRole;
+
     public String uuid;
 
 }
