@@ -108,7 +108,7 @@ public class TaskServiceHelper extends BaseHelper {
         syncProgress.setSyncEntity(SyncEntity.TASKS);
         syncProgress.setTotalRecords(totalRecords);
 
-        List<Task> tasks = batchFetchTasksFromServer(planDefinitions,groups, new ArrayList<>(), true);
+        List<Task> tasks = batchFetchTasksFromServer(planDefinitions, groups, new ArrayList<>(), true);
 
         syncProgress.setPercentageSynced(Utils.calculatePercentage(totalRecords, tasks.size()));
         sendSyncProgressBroadcast(syncProgress, context);
@@ -127,9 +127,23 @@ public class TaskServiceHelper extends BaseHelper {
         try {
             long maxServerVersion = 0L;
             String tasksResponse = fetchTasks(planDefinitions, groups, serverVersion, returnCount);
-            List<Task> tasks = taskGson.fromJson(tasksResponse, new TypeToken<List<Task>>() {
+            String tasksWithoutGroupResponse = fetchTasksWithoutGroups(planDefinitions, serverVersion, returnCount);
+
+            List<Task> tasksResponseList = taskGson.fromJson(tasksResponse, new TypeToken<List<Task>>() {
             }.getType());
-            if (tasks != null && tasks.size() > 0) {
+
+            List<Task> tasksWithoutGroupResponseList = taskGson.fromJson(tasksWithoutGroupResponse, new TypeToken<List<Task>>() {
+            }.getType());
+
+            List<Task> tasks = new ArrayList<>();
+            if (tasksResponseList != null && tasksResponseList.size() > 0) {
+                tasks.addAll(tasksResponseList);
+            }
+            if (tasksWithoutGroupResponseList != null && tasksWithoutGroupResponseList.size() > 0) {
+                tasks.addAll(tasksWithoutGroupResponseList);
+            }
+
+            if (tasks.size() > 0) {
                 for (Task task : tasks) {
                     try {
                         task.setSyncStatus(BaseRepository.TYPE_Synced);
@@ -165,6 +179,36 @@ public class TaskServiceHelper extends BaseHelper {
 
         JSONObject request = isSyncByGroupIdentifier() ? getSyncTaskRequest(plan, group, serverVersion) :
                 getSyncTaskRequest(plan, getOwner(), serverVersion);
+        request.put(AllConstants.RETURN_COUNT, returnCount);
+
+        if (httpAgent == null) {
+            throw new IllegalArgumentException(SYNC_TASK_URL + " http agent is null");
+        }
+
+        Response resp = httpAgent.post(MessageFormat.format("{0}{1}", baseUrl, SYNC_TASK_URL),
+                request.toString());
+
+        if (resp.isFailure()) {
+            throw new NoHttpResponseException(SYNC_TASK_URL + " not returned data");
+        }
+
+        if (returnCount) {
+            totalRecords = resp.getTotalRecords();
+        }
+
+        return resp.payload().toString();
+    }
+
+    private String fetchTasksWithoutGroups(Set<String> plan, Long serverVersion, boolean returnCount) throws Exception {
+        HTTPAgent httpAgent = getHttpAgent();
+        String baseUrl = CoreLibrary.getInstance().context().configuration().dristhiBaseURL();
+        String endString = "/";
+
+        if (baseUrl.endsWith(endString)) {
+            baseUrl = baseUrl.substring(0, baseUrl.lastIndexOf(endString));
+        }
+
+        JSONObject request = getSyncTaskRequest(plan, getOwner(), serverVersion);
         request.put(AllConstants.RETURN_COUNT, returnCount);
 
         if (httpAgent == null) {
