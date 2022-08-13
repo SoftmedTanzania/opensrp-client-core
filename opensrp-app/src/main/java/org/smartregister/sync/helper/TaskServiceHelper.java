@@ -127,7 +127,7 @@ public class TaskServiceHelper extends BaseHelper {
         try {
             long maxServerVersion = 0L;
             String tasksResponse = fetchTasks(planDefinitions, groups, serverVersion, returnCount);
-            String tasksWithoutGroupResponse = fetchTasksWithoutGroups(planDefinitions, new ArrayList<>(), serverVersion, returnCount);
+            String tasksWithoutGroupResponse = fetchTasksWithoutGroups(planDefinitions, serverVersion, returnCount);
 
             List<Task> tasksResponseList = taskGson.fromJson(tasksResponse, new TypeToken<List<Task>>() {
             }.getType());
@@ -199,7 +199,7 @@ public class TaskServiceHelper extends BaseHelper {
         return resp.payload().toString();
     }
 
-    private String fetchTasksWithoutGroups(Set<String> plan, List<String> group, Long serverVersion, boolean returnCount) throws Exception {
+    private String fetchTasksWithoutGroups(Set<String> plan, Long serverVersion, boolean returnCount) throws Exception {
         HTTPAgent httpAgent = getHttpAgent();
         String baseUrl = CoreLibrary.getInstance().context().configuration().dristhiBaseURL();
         String endString = "/";
