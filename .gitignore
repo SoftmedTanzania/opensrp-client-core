@@ -18,6 +18,7 @@ project.properties
 build/
 .gradle
 *.log
+github.properties
 !opensrp-app/assets/web/build/
 !opensrp-app/assets/web/lib/enketo-core/build/
 opensrp-path/fabric.properties
