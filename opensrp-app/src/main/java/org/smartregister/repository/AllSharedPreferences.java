@@ -8,6 +8,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Calendar;
 
 import static org.smartregister.AllConstants.CURRENT_LOCALITY;
 import static org.smartregister.AllConstants.DEFAULT_LOCALE;
@@ -22,6 +23,7 @@ import static org.smartregister.AllConstants.FORCE_REMOTE_LOGIN;
 import static org.smartregister.AllConstants.IS_SYNC_INITIAL_KEY;
 import static org.smartregister.AllConstants.IS_SYNC_IN_PROGRESS_PREFERENCE_KEY;
 import static org.smartregister.AllConstants.LANGUAGE_PREFERENCE_KEY;
+import static org.smartregister.AllConstants.LAST_LOCATIONS_BY_LEVEL_AND_TAGS_SYNC_TIMESTAMP;
 import static org.smartregister.AllConstants.PIONEER_USER;
 import static org.smartregister.AllConstants.SERVER_TIMEZONE;
 import static org.smartregister.AllConstants.TEAM_ROLE;

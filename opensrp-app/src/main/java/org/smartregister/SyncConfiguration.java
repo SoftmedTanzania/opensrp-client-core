@@ -10,6 +10,7 @@ public abstract class SyncConfiguration {
 
     private int connectTimeout = 60000;
     private int readTimeout = 60000;
+    private int locationSyncByLevelAndTagsDurationInDays = 30;
 
     public abstract int getSyncMaxRetries();
 
@@ -22,6 +23,16 @@ public abstract class SyncConfiguration {
     public abstract int getUniqueIdBatchSize();
 
     public abstract int getUniqueIdInitialBatchSize();
+
+    // determines the syncLocationByLevelAndTags Duration in days
+    public int getLocationSyncByLevelAndTagsDurationInDays() {
+        return locationSyncByLevelAndTagsDurationInDays;
+    }
+
+    //sets the syncLocationByLevelAndTags duration
+    public void setLocationSyncByLevelAndTagsDurationInDays(int locationSyncByLevelAndTagsDurationInDays) {
+        this.locationSyncByLevelAndTagsDurationInDays = locationSyncByLevelAndTagsDurationInDays;
+    }
 
     //if need to set it true override this method and return true.
 

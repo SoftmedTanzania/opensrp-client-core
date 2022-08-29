@@ -1,5 +1,15 @@
 package org.smartregister.sync.helper;
 
+import static org.smartregister.AllConstants.LAST_LOCATIONS_BY_LEVEL_AND_TAGS_SYNC_TIMESTAMP;
+import static org.smartregister.AllConstants.LocationConstants.DISPLAY;
+import static org.smartregister.AllConstants.LocationConstants.LOCATION;
+import static org.smartregister.AllConstants.LocationConstants.LOCATIONS;
+import static org.smartregister.AllConstants.LocationConstants.SPECIAL_TAG_FOR_OPENMRS_TEAM_MEMBERS;
+import static org.smartregister.AllConstants.LocationConstants.TEAM;
+import static org.smartregister.AllConstants.LocationConstants.UUID;
+import static org.smartregister.AllConstants.OPERATIONAL_AREAS;
+import static org.smartregister.AllConstants.RETURN_COUNT;
+
 import android.content.Context;
 import android.text.TextUtils;
 
@@ -31,22 +41,17 @@ import org.smartregister.util.PropertiesConverter;
 import org.smartregister.util.Utils;
 
 import java.text.MessageFormat;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 import timber.log.Timber;
-
-import static org.smartregister.AllConstants.LocationConstants.DISPLAY;
-import static org.smartregister.AllConstants.LocationConstants.LOCATION;
-import static org.smartregister.AllConstants.LocationConstants.LOCATIONS;
-import static org.smartregister.AllConstants.LocationConstants.SPECIAL_TAG_FOR_OPENMRS_TEAM_MEMBERS;
-import static org.smartregister.AllConstants.LocationConstants.TEAM;
-import static org.smartregister.AllConstants.LocationConstants.UUID;
-import static org.smartregister.AllConstants.OPERATIONAL_AREAS;
-import static org.smartregister.AllConstants.RETURN_COUNT;
 
 public class LocationServiceHelper extends BaseHelper {
 
@@ -67,7 +72,7 @@ public class LocationServiceHelper extends BaseHelper {
     private LocationTagRepository locationTagRepository;
     private StructureRepository structureRepository;
     private long totalRecords;
-    private  SyncProgress syncProgress;
+    private SyncProgress syncProgress;
 
     public LocationServiceHelper(LocationRepository locationRepository, LocationTagRepository locationTagRepository, StructureRepository structureRepository) {
         this.context = CoreLibrary.getInstance().context().applicationContext();
@@ -135,7 +140,7 @@ public class LocationServiceHelper extends BaseHelper {
                 locations.addAll(batchLocationStructures);
                 syncProgress.setPercentageSynced(Utils.calculatePercentage(totalRecords, locations.size()));
                 sendSyncProgressBroadcast(syncProgress, context);
-                return  batchSyncLocationsStructures(isJurisdiction, locations, false);
+                return batchSyncLocationsStructures(isJurisdiction, locations, false);
 
             }
         } catch (Exception e) {
@@ -200,6 +205,18 @@ public class LocationServiceHelper extends BaseHelper {
     }
 
     public void fetchLocationsByLevelAndTags() throws Exception {
+        //Implementation for checking if the sync schedule has arrived for refreshing the locations.
+        //This is sometimes an expensive process if alot of facilities are pulled at once hence it should be run on a specified period
+        long lastFetchLocationByLevelAndTagsTimestamp = allSharedPreferences.getPreferences().getLong(LAST_LOCATIONS_BY_LEVEL_AND_TAGS_SYNC_TIMESTAMP, 0);
+        Date lastFetchLocationByLevelAndTagsDate = new Date(lastFetchLocationByLevelAndTagsTimestamp);
+
+        LocalDateTime lastFetchDate = lastFetchLocationByLevelAndTagsDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
+
+        LocalDateTime now = new Date().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
+
+        if (!now.isAfter(lastFetchDate.plusDays(CoreLibrary.getInstance().getSyncConfiguration().getLocationSyncByLevelAndTagsDurationInDays())))
+            return;
+
 
         HTTPAgent httpAgent = getHttpAgent();
 
@@ -251,6 +268,8 @@ public class LocationServiceHelper extends BaseHelper {
                 locationTagRepository.addOrUpdate(locationTag);
             }
         }
+
+        allSharedPreferences.getPreferences().edit().putLong(LAST_LOCATIONS_BY_LEVEL_AND_TAGS_SYNC_TIMESTAMP, Calendar.getInstance().getTimeInMillis()).commit();
     }
 
     public SyncConfiguration getSyncConfiguration() {
@@ -316,6 +335,7 @@ public class LocationServiceHelper extends BaseHelper {
             }
         }
     }
+
     public void fetchOpenMrsLocationsByTeamIds() throws NoHttpResponseException, JSONException {
         HTTPAgent httpAgent = getHttpAgent();
         if (httpAgent == null) {
