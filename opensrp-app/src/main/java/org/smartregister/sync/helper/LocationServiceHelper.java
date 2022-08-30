@@ -41,8 +41,6 @@ import org.smartregister.util.PropertiesConverter;
 import org.smartregister.util.Utils;
 
 import java.text.MessageFormat;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -210,11 +208,12 @@ public class LocationServiceHelper extends BaseHelper {
         long lastFetchLocationByLevelAndTagsTimestamp = allSharedPreferences.getPreferences().getLong(LAST_LOCATIONS_BY_LEVEL_AND_TAGS_SYNC_TIMESTAMP, 0);
         Date lastFetchLocationByLevelAndTagsDate = new Date(lastFetchLocationByLevelAndTagsTimestamp);
 
-        LocalDateTime lastFetchDate = lastFetchLocationByLevelAndTagsDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
+        Calendar lastFetchCalendar = Calendar.getInstance();
+        lastFetchCalendar.setTime(lastFetchLocationByLevelAndTagsDate);
+        lastFetchCalendar.add(Calendar.DATE, CoreLibrary.getInstance().getSyncConfiguration().getLocationSyncByLevelAndTagsDurationInDays());
 
-        LocalDateTime now = new Date().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
-
-        if (!now.isAfter(lastFetchDate.plusDays(CoreLibrary.getInstance().getSyncConfiguration().getLocationSyncByLevelAndTagsDurationInDays())))
+        Date now = new Date();
+        if (!now.after(lastFetchCalendar.getTime()))
             return;
 
 
