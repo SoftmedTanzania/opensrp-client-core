@@ -8,7 +8,6 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Calendar;
 
 import static org.smartregister.AllConstants.CURRENT_LOCALITY;
 import static org.smartregister.AllConstants.DEFAULT_LOCALE;
@@ -23,30 +22,30 @@ import static org.smartregister.AllConstants.FORCE_REMOTE_LOGIN;
 import static org.smartregister.AllConstants.IS_SYNC_INITIAL_KEY;
 import static org.smartregister.AllConstants.IS_SYNC_IN_PROGRESS_PREFERENCE_KEY;
 import static org.smartregister.AllConstants.LANGUAGE_PREFERENCE_KEY;
-import static org.smartregister.AllConstants.LAST_LOCATIONS_BY_LEVEL_AND_TAGS_SYNC_TIMESTAMP;
 import static org.smartregister.AllConstants.PIONEER_USER;
 import static org.smartregister.AllConstants.SERVER_TIMEZONE;
 import static org.smartregister.AllConstants.TEAM_ROLE;
 import static org.smartregister.AllConstants.TEAM_ROLE_IDENTIFIER;
 import static org.smartregister.AllConstants.USER_LOCALITY_ID_PREFIX;
+import static org.smartregister.AllConstants.USER_LOCATION_TAG;
 import static org.smartregister.util.Log.logError;
 import static org.smartregister.util.Log.logInfo;
 
 public class AllSharedPreferences {
     public static final String ANM_IDENTIFIER_PREFERENCE_KEY = "anmIdentifier";
+    public final static String LAST_SETTINGS_SYNC_TIMESTAMP = "LAST_SETTINGS_SYNC_TIMESTAMP";
+    public static final String MANIFEST_VERSION = "MANIFEST_VERSION";
+    public static final String FORMS_VERSION = "FORMS_VERSION";
     private static final String HOST = "HOST";
     private static final String PORT = "PORT";
     private static final String LAST_SYNC_DATE = "LAST_SYNC_DATE";
     private static final String LAST_UPDATED_AT_DATE = "LAST_UPDATED_AT_DATE";
     private static final String LAST_CHECK_TIMESTAMP = "LAST_SYNC_CHECK_TIMESTAMP";
-    public final static String LAST_SETTINGS_SYNC_TIMESTAMP = "LAST_SETTINGS_SYNC_TIMESTAMP";
     private static final String LAST_CLIENT_PROCESSED_TIMESTAMP = "LAST_CLIENT_PROCESSED_TIMESTAMP";
     private static final String TRANSACTIONS_KILLED_FLAG = "TRANSACTIONS_KILLED_FLAG";
     private static final String MIGRATED_TO_SQLITE_4 = "MIGRATED_TO_SQLITE_4";
     private static final String PEER_TO_PEER_SYNC_LAST_PROCESSED_RECORD = "PEER_TO_PEER_SYNC_LAST_PROCESSED_RECORD";
     private static final String PEER_TO_PEER_SYNC_LAST_FOREIGN_PROCESSED_RECORD = "PEER_TO_PEER_SYNC_LAST_FOREIGN_PROCESSED_RECORD";
-    public static final String MANIFEST_VERSION = "MANIFEST_VERSION";
-    public static final String FORMS_VERSION = "FORMS_VERSION";
     private SharedPreferences preferences;
 
     public AllSharedPreferences(SharedPreferences preferences) {
@@ -132,6 +131,17 @@ public class AllSharedPreferences {
             return preferences.getString(USER_LOCALITY_ID_PREFIX + username, null);
         }
         return null;
+    }
+
+    public void saveUserLocationTag(String locationTag) {
+        if (locationTag != null) {
+            preferences.edit().putString(USER_LOCATION_TAG, locationTag)
+                    .commit();
+        }
+    }
+
+    public String fetchUserLocationTag() {
+        return preferences.getString(USER_LOCATION_TAG, null);
     }
 
     public void saveDefaultTeam(String username, String team) {
