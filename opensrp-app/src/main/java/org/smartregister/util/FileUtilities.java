@@ -6,6 +6,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Environment;
 
+import org.apache.commons.lang3.StringUtils;
 import org.smartregister.AllConstants;
 import org.smartregister.CoreLibrary;
 
@@ -95,10 +96,9 @@ public class FileUtilities {
     }
 
     public static String getImageUrl(String entityID) {
-        String url = format("{0}/{1}/{2}",
-                CoreLibrary.getInstance().context().allSharedPreferences().fetchBaseURL(""),
-                AllConstants.PROFILE_IMAGES_DOWNLOAD_PATH, entityID);
-        return url;
+        String baseUrl = CoreLibrary.getInstance().context().allSharedPreferences().fetchBaseURL("");
+        baseUrl = StringUtils.isNotBlank(baseUrl) && baseUrl.endsWith("/") ? baseUrl.substring(0, baseUrl.length() - 1) : baseUrl;
+        return format("{0}/{1}/{2}", baseUrl, AllConstants.PROFILE_IMAGES_DOWNLOAD_PATH, entityID);
     }
 
     public void write(String fileName, String data) {

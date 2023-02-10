@@ -1,9 +1,10 @@
 package org.smartregister.domain;
 
+import static java.text.MessageFormat.format;
+
+import org.apache.commons.lang3.StringUtils;
 import org.smartregister.AllConstants;
 import org.smartregister.CoreLibrary;
-
-import static java.text.MessageFormat.format;
 
 public class ProfileImage {
     private String imageid;
@@ -85,9 +86,8 @@ public class ProfileImage {
     }
 
     public String getImageUrl() {
-        String url = format("{0}/{1}/{2}",
-                CoreLibrary.getInstance().context().allSharedPreferences().fetchBaseURL(""),
-                AllConstants.PROFILE_IMAGES_DOWNLOAD_PATH, entityID);
-        return url;
+        String baseUrl = CoreLibrary.getInstance().context().allSharedPreferences().fetchBaseURL("");
+        baseUrl = StringUtils.isNotBlank(baseUrl) && baseUrl.endsWith("/") ? baseUrl.substring(0, baseUrl.length() - 1) : baseUrl;
+        return format("{0}/{1}/{2}", baseUrl, AllConstants.PROFILE_IMAGES_DOWNLOAD_PATH, entityID);
     }
 }
