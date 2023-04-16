@@ -88,6 +88,6 @@ public class ProfileImage {
     public String getImageUrl() {
         String baseUrl = CoreLibrary.getInstance().context().allSharedPreferences().fetchBaseURL("");
         baseUrl = StringUtils.isNotBlank(baseUrl) && baseUrl.endsWith("/") ? baseUrl.substring(0, baseUrl.length() - 1) : baseUrl;
-        return format("{0}/{1}/{2}", baseUrl, AllConstants.PROFILE_IMAGES_DOWNLOAD_PATH, entityID);
+        return format("{0}{1}/{2}", baseUrl, AllConstants.PROFILE_IMAGES_DOWNLOAD_PATH, entityID);
     }
 }

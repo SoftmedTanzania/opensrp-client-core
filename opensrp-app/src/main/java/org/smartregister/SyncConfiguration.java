@@ -10,7 +10,7 @@ public abstract class SyncConfiguration {
 
     private int connectTimeout = 60000;
     private int readTimeout = 60000;
-    private int locationSyncByLevelAndTagsDurationInDays = 30;
+    private int locationSyncByLevelAndTagsDurationInDays = 0;
 
     public abstract int getSyncMaxRetries();
 
@@ -24,7 +24,7 @@ public abstract class SyncConfiguration {
 
     public abstract int getUniqueIdInitialBatchSize();
 
-    // determines the syncLocationByLevelAndTags Duration in days
+    // determines the number of days between synchronizations of LocationByLevelAndTags
     public int getLocationSyncByLevelAndTagsDurationInDays() {
         return locationSyncByLevelAndTagsDurationInDays;
     }

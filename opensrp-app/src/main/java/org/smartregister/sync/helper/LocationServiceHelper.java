@@ -268,7 +268,8 @@ public class LocationServiceHelper extends BaseHelper {
             }
         }
 
-        allSharedPreferences.getPreferences().edit().putLong(LAST_LOCATIONS_BY_LEVEL_AND_TAGS_SYNC_TIMESTAMP, Calendar.getInstance().getTimeInMillis()).commit();
+        if (receivedOpenMrsLocations.size() > 0)
+            allSharedPreferences.getPreferences().edit().putLong(LAST_LOCATIONS_BY_LEVEL_AND_TAGS_SYNC_TIMESTAMP, Calendar.getInstance().getTimeInMillis()).commit();
     }
 
     public SyncConfiguration getSyncConfiguration() {
