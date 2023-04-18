@@ -458,7 +458,7 @@ public class ClientProcessorForJava {
                                 (encounterType == null) || (encounterType
                                         .equalsIgnoreCase(expectedEncounterType));
 
-                        if (encounterTypeMatches && expectedFieldValue
+                        if (expectedFieldValue != null && encounterTypeMatches && expectedFieldValue
                                 .equalsIgnoreCase(fieldValue)) {
 
                             if (StringUtils.isNotBlank(valueField)) {

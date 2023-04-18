@@ -543,7 +543,7 @@ public class ClientProcessor {
                                                 && encounterType
                                                 .equalsIgnoreCase(expectedEncounterType));
 
-                                if (encounterTypeMatches && expectedFieldValue
+                                if (expectedFieldValue != null && encounterTypeMatches && expectedFieldValue
                                         .equalsIgnoreCase(fieldValue)) {
                                     columnValue = getValues(jsonDocObject.get(responseKey)).get(0);
                                 }
